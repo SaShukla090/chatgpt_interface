@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Interface</title>
+</head>
+<body>
+    <h1>ChatGPT Interface</h1>
+    <div id="chat-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc;">
+        <!-- Messages will appear here -->
+    </div>
+    <input type="text" id="user-input" placeholder="Type your message here" style="width: 80%;">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            var chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += '<p><b>You:</b> ' + userInput + '</p>';
+            fetch('/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'input': userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += '<p><b>ChatGPT:</b> ' + data.response + '</p>';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
